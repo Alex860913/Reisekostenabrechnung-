@@ -5,8 +5,8 @@ Begriffe aus den Vorlagen der LETHE Exterior Doors GmbH (Stand 2026). Regeln und
 **Mitarbeiter**
 Person, die die Abrechnung ausfüllt und unterschreibt.
 
-**Anlass der Reise / Ort**
-Freitext, warum und wohin gereist wurde.
+**Projektname / Vorgang**
+Freitext, zu welchem Projekt oder Vorgang die Abrechnung gehört.
 
 **Abrechnungsart**
 Eine der drei Vorlagen: Spesenabrechnung, Abrechnung gegen Beleg oder KM-Abrechnung.

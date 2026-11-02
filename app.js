@@ -3,7 +3,7 @@
   /* ---------- Konstanten ---------- */
   var KM_RATE = 0.30;
   var LOCALES = { de: 'de-DE', en: 'en-GB', ru: 'ru-RU' };
-  var LANG_NAMES = { de: 'Deutsch', en: 'English', ru: 'Русский' };
+  var LANG_NAMES = { de: 'Deutsch', en: 'English', ru: 'Kyrillisch' };
   var TYPES = ['spesen', 'beleg', 'km'];
   var FILE_NAMES = { spesen: 'Spesenabrechnung', beleg: 'Abrechnung_gegen_Beleg', km: 'KM-Abrechnung' };
   var LIMITS = { meal: 20, other: 2, beleg: 17, km: 11 };
@@ -28,7 +28,7 @@
         clear: 'Unterschrift löschen', addRow: 'Zeile hinzufügen', removeRow: 'Zeile entfernen',
         btnPdf: 'PDF-Auszug sichern', btnJson: 'Daten als Datei sichern', btnLoad: 'Gesicherte Daten laden',
         missing: 'Zum Sichern fehlt noch: ', ready: 'Bereit. Beim PDF-Auszug wählen Sie im Druckdialog „Als PDF speichern“.',
-        fName: 'Name', fOccasion: 'Anlass der Reise / Ort', fSignature: 'Unterschrift',
+        fName: 'Name', fOccasion: 'Projektname / Vorgang', fSignature: 'Unterschrift',
         loadOk: 'Daten geladen.', loadErr: 'Die Datei konnte nicht gelesen werden.',
         btnPdfAlt: 'Druckfertige Datei sichern',
         readyFile: 'Bereit. Die gesicherte Datei öffnen Sie im Browser und drucken sie dort als PDF (Strg+P).',
@@ -36,7 +36,7 @@
         t: { spesen: 'Spesenabrechnung', beleg: 'Abrechnung gegen Beleg', km: 'KM-Abrechnung' }
       },
       f: {
-        name: 'Name:', occasion: 'Anlass der Reise / Ort:', date: 'Datum', signature: 'Unterschrift Mitarbeiter',
+        name: 'Name:', occasion: 'Projektname / Vorgang:', date: 'Datum', signature: 'Unterschrift Mitarbeiter',
         spTitle: 'Spesenabrechnung',
         spS1: '1.) pauschale Verpflegungsmehraufwendungen / Erstattung mit Lohnabrechnung',
         spS1Note: 'Erstattung nur innerhalb der ersten drei Monate auf neuer Werft',
@@ -65,7 +65,7 @@
         clear: 'Clear signature', addRow: 'Add row', removeRow: 'Remove row',
         btnPdf: 'Save PDF extract', btnJson: 'Save data as file', btnLoad: 'Load saved data',
         missing: 'Still missing before saving: ', ready: 'Ready. For the PDF extract, choose “Save as PDF” in the print dialog.',
-        fName: 'Name', fOccasion: 'Purpose of trip / location', fSignature: 'Signature',
+        fName: 'Name', fOccasion: 'Project name / reference', fSignature: 'Signature',
         loadOk: 'Data loaded.', loadErr: 'The file could not be read.',
         btnPdfAlt: 'Save print-ready file',
         readyFile: 'Ready. Open the saved file in your browser and print it as PDF there (Ctrl+P).',
@@ -73,7 +73,7 @@
         t: { spesen: 'Flat-rate allowances', beleg: 'Reimbursement against receipts', km: 'Mileage claim' }
       },
       f: {
-        name: 'Name:', occasion: 'Purpose of trip / location:', date: 'Date', signature: 'Employee signature',
+        name: 'Name:', occasion: 'Project name / reference:', date: 'Date', signature: 'Employee signature',
         spTitle: 'Allowance claim',
         spS1: '1.) Flat-rate meal allowances / reimbursed with payroll',
         spS1Note: 'Reimbursement only within the first three months at a new shipyard',
@@ -102,7 +102,7 @@
         clear: 'Стереть подпись', addRow: 'Добавить строку', removeRow: 'Удалить строку',
         btnPdf: 'Сохранить выписку в PDF', btnJson: 'Сохранить данные в файл', btnLoad: 'Загрузить сохранённые данные',
         missing: 'Для сохранения ещё не хватает: ', ready: 'Готово. Для PDF в окне печати выберите «Сохранить как PDF».',
-        fName: 'ФИО', fOccasion: 'Цель поездки / место', fSignature: 'Подпись',
+        fName: 'ФИО', fOccasion: 'Название проекта / дело', fSignature: 'Подпись',
         loadOk: 'Данные загружены.', loadErr: 'Не удалось прочитать файл.',
         btnPdfAlt: 'Сохранить файл для печати',
         readyFile: 'Готово. Откройте сохранённый файл в браузере и распечатайте его в PDF (Ctrl+P).',
@@ -110,7 +110,7 @@
         t: { spesen: 'Суточные и пауш. расходы', beleg: 'Возмещение по чекам', km: 'Возмещение за километраж' }
       },
       f: {
-        name: 'ФИО:', occasion: 'Цель поездки / место:', date: 'Дата', signature: 'Подпись сотрудника',
+        name: 'ФИО:', occasion: 'Название проекта / дело:', date: 'Дата', signature: 'Подпись сотрудника',
         spTitle: 'Отчёт о суточных расходах',
         spS1: '1.) Пауш. возмещение дополнительных расходов на питание / выплата с зарплатой',
         spS1Note: 'Выплата только в течение первых трёх месяцев на новой верфи',
@@ -202,7 +202,7 @@
 
   /* ---------- Formular zeichnen ---------- */
   function rmCell(k, i) {
-    return '<td class="noprint c-rm"><button type="button" class="rm" data-rm="' + k + '" data-i="' + i + '" aria-label="' +
+    return '<td class="noprint c-rm" data-c="rm"><button type="button" class="rm" data-rm="' + k + '" data-i="' + i + '" aria-label="' +
       esc(T().ui.removeRow) + '"' + (state[k].length <= 1 ? ' disabled' : '') + '>×</button></td>';
   }
   function addBtn(k) {
@@ -253,17 +253,17 @@
   function paperSpesen() {
     var f = T().f;
     var meal = state.meal.map(function (r, i) {
-      return '<tr><td>' + cell('meal', i, 'date', 'date', r.date, f.colDate) + '</td>' +
-        '<td>' + cell('meal', i, 'from', 'time', r.from, f.colFrom) + '</td>' +
-        '<td>' + cell('meal', i, 'to', 'time', r.to, f.colTo) + '</td>' +
-        '<td class="num"><output data-hours="' + i + '"></output></td>' +
-        '<td>' + cell('meal', i, 'place', 'text', r.place, f.colPlace) + '</td>' +
-        '<td>' + cell('meal', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('meal', i) + '</tr>';
+      return '<tr class="r-meal"><td data-c="date" data-label="' + esc(f.colDate) + '">' + cell('meal', i, 'date', 'date', r.date, f.colDate) + '</td>' +
+        '<td data-c="from" data-label="' + esc(f.colFrom) + '">' + cell('meal', i, 'from', 'time', r.from, f.colFrom) + '</td>' +
+        '<td data-c="to" data-label="' + esc(f.colTo) + '">' + cell('meal', i, 'to', 'time', r.to, f.colTo) + '</td>' +
+        '<td class="num" data-c="hrs" data-label="' + esc(f.colHours) + '"><output data-hours="' + i + '"></output></td>' +
+        '<td data-c="place" data-label="' + esc(f.colPlace) + '">' + cell('meal', i, 'place', 'text', r.place, f.colPlace) + '</td>' +
+        '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('meal', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('meal', i) + '</tr>';
     }).join('');
     var other = state.other.map(function (r, i) {
-      return '<tr><td>' + cell('other', i, 'period', 'text', r.period, f.colPeriod) + '</td>' +
-        '<td colspan="4">' + cell('other', i, 'text', 'text', r.text, f.colText) + '</td>' +
-        '<td>' + cell('other', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('other', i) + '</tr>';
+      return '<tr class="r-other"><td data-c="period" data-label="' + esc(f.colPeriod) + '">' + cell('other', i, 'period', 'text', r.period, f.colPeriod) + '</td>' +
+        '<td colspan="4" data-c="text" data-label="' + esc(f.colText) + '">' + cell('other', i, 'text', 'text', r.text, f.colText) + '</td>' +
+        '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('other', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('other', i) + '</tr>';
     }).join('');
     return headBlock(f.spTitle) +
       '<h3 class="p-sec">' + esc(f.spS1) + '</h3><p class="p-note">' + esc(f.spS1Note) + '</p>' +
@@ -285,9 +285,9 @@
   function paperBeleg() {
     var f = T().f;
     var body = state.beleg.map(function (r, i) {
-      return '<tr><td>' + cell('beleg', i, 'date', 'date', r.date, f.colDate) + '</td>' +
-        '<td>' + cell('beleg', i, 'text', 'text', r.text, f.colText) + '</td>' +
-        '<td>' + cell('beleg', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('beleg', i) + '</tr>';
+      return '<tr class="r-beleg"><td data-c="date" data-label="' + esc(f.colDate) + '">' + cell('beleg', i, 'date', 'date', r.date, f.colDate) + '</td>' +
+        '<td data-c="text" data-label="' + esc(f.colText) + '">' + cell('beleg', i, 'text', 'text', r.text, f.colText) + '</td>' +
+        '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('beleg', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('beleg', i) + '</tr>';
     }).join('');
     return headBlock(f.beTitle) +
       '<h3 class="p-sec">' + esc(f.beSec) + ' <span class="norm">' + esc(f.beSecNote) + '</span></h3>' +
@@ -301,9 +301,9 @@
   function paperKm() {
     var f = T().f;
     var body = state.km.map(function (r, i) {
-      return '<tr><td>' + cell('km', i, 'date', 'date', r.date, f.colDate) + '</td>' +
-        '<td>' + cell('km', i, 'dest', 'text', r.dest, f.kmDest) + '</td>' +
-        '<td>' + cell('km', i, 'km', 'text', r.km, f.kmCol, 'num') + '</td>' + rmCell('km', i) + '</tr>';
+      return '<tr class="r-km"><td data-c="date" data-label="' + esc(f.colDate) + '">' + cell('km', i, 'date', 'date', r.date, f.colDate) + '</td>' +
+        '<td data-c="dest" data-label="' + esc(f.kmDest) + '">' + cell('km', i, 'dest', 'text', r.dest, f.kmDest) + '</td>' +
+        '<td data-c="km" data-label="' + esc(f.kmCol) + '">' + cell('km', i, 'km', 'text', r.km, f.kmCol, 'num') + '</td>' + rmCell('km', i) + '</tr>';
     }).join('');
     return headBlock(f.kmTitle) +
       '<h3 class="p-sec">' + esc(f.kmIntro) + '</h3>' +
@@ -589,5 +589,12 @@
       applyChrome();
       updateStatus();
     }).catch(function () {});
+  }
+
+  /* App-Modus: speichert nur die eigenen Programmdateien, damit die Seite auch ohne Netz startet. */
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
   }
 })();

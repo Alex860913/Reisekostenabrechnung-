@@ -4,7 +4,7 @@ Begriffe stehen in `GLOSSARY.md`.
 
 ## Regeln
 
-- Name, Anlass und Unterschrift sind vor dem Sichern Pflicht.
+- Name, Projektname / Vorgang und Unterschrift sind vor dem Sichern Pflicht.
 - Die Stunden einer Verpflegungszeile ergeben sich aus Uhrzeit von/bis. Liegt „bis“ vor „von“, läuft die Zeit über Mitternacht.
 - Verpflegungsmehraufwand wird nur innerhalb der ersten drei Monate auf einer neuen Werft erstattet (Hinweis der Vorlage).
 - Kilometergeld = Summe der Kilometer × 0,30 €.
