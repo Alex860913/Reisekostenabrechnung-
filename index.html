@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Reisekostenabrechnung</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+
+  <header class="top noprint">
+    <h1 data-i18n="appTitle">Reisekostenabrechnung</h1>
+    <p class="privacy" data-i18n="privacy"></p>
+  </header>
+
+  <section class="step noprint" aria-labelledby="h-lang">
+    <h2 id="h-lang"><span class="no">1</span><span data-i18n="stepLang"></span></h2>
+    <div class="seg" id="choice-lang" role="radiogroup" aria-labelledby="h-lang"></div>
+  </section>
+
+  <section class="step noprint" aria-labelledby="h-type">
+    <h2 id="h-type"><span class="no">2</span><span data-i18n="stepType"></span></h2>
+    <div class="seg" id="choice-type" role="radiogroup" aria-labelledby="h-type"></div>
+  </section>
+
+  <section class="step" aria-labelledby="h-fill">
+    <h2 id="h-fill" class="noprint"><span class="no">3</span><span data-i18n="stepFill"></span></h2>
+    <div class="paper-scroll">
+      <article class="paper" id="paper"></article>
+    </div>
+  </section>
+
+  <section class="step noprint" aria-labelledby="h-sign">
+    <h2 id="h-sign"><span class="no">4</span><span data-i18n="stepSign"></span></h2>
+    <p class="hint" data-i18n="signHint"></p>
+    <canvas id="pad" class="pad" width="900" height="300" aria-label="Signature"></canvas>
+    <div class="row">
+      <button type="button" class="btn ghost" id="clear-sig" data-i18n="clear"></button>
+    </div>
+  </section>
+
+  <section class="step noprint" aria-labelledby="h-save">
+    <h2 id="h-save"><span class="no">5</span><span data-i18n="stepSave"></span></h2>
+    <div class="row">
+      <button type="button" class="btn primary" id="btn-pdf" data-i18n="btnPdf"></button>
+      <button type="button" class="btn" id="btn-json" data-i18n="btnJson"></button>
+      <label class="btn ghost file">
+        <span data-i18n="btnLoad"></span>
+        <input type="file" id="file-load" accept="application/json,.json">
+      </label>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </section>
+
+</main>
+<script src="app.js"></script>
+</body>
+</html>
