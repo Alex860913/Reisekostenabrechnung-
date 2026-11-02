@@ -5,10 +5,10 @@ Statische Seite für die Reisekostenabrechnung der LETHE Exterior Doors GmbH. Si
 ## Funktionen
 
 1. Sprache wählen: Deutsch, Englisch oder Russisch.
-2. Vorlage wählen: Spesenabrechnung, Abrechnung gegen Beleg oder KM-Abrechnung.
+2. Vorlage wählen: Spesenabrechnung, Abrechnung gegen Beleg, KM-Abrechnung oder Eigenbeleg.
 3. Formular ausfüllen. Summen, Stunden und Kilometergeld (0,30 € je km) werden automatisch berechnet.
 4. Im Feld unterschreiben (Maus, Finger oder Stift).
-5. Sichern ist erst nach Name, Anlass und Unterschrift möglich:
+5. Sichern ist erst nach Name, Projektname / Vorgang und Unterschrift möglich:
    - **PDF-Auszug sichern** öffnet den Druckdialog des Browsers im A4-Layout. Dort „Als PDF speichern“ wählen.
    - **Daten als Datei sichern** lädt eine `.json`-Datei herunter, die sich später wieder laden lässt.
 

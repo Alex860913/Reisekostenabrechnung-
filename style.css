@@ -151,6 +151,16 @@ body {
 .grid.cyan th { background: #ccffff; font-weight: 400; text-align: left; }
 .grid.cyan th.t-c { text-align: center; }
 .grid.gap { margin-top: 22px; }
+/* Eigenbeleg: hellblauer Kopf, dünne graue Linien */
+.grid.eb { margin-top: 18px; }
+.grid.eb th { background: #dde5f6; border: 0; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; text-align: left; }
+.grid.eb th.t-r { text-align: center; }
+.grid.eb tbody td { border: 0; border-bottom: 1px solid #c9ccd1; }
+.grid.eb tbody td + td { border-left: 1px solid #aab0b8; }
+.grid.eb tfoot td { border: 0; border-top: 1.5px solid #000; border-bottom: 0; padding: 3px 5px; }
+.grid.eb tfoot td.sum { border-bottom: 3px double #000; border-top: 1.5px solid #000; }
+.eb-sign { margin-top: 30px; }
+.sg-city { width: 190px; }
 .norm { font-weight: 400; }
 .grid td input, .grid td output {
   display: block; width: 100%; height: 24px; padding: 3px 5px;
@@ -260,11 +270,16 @@ body {
   .grid tfoot tr { display: flex; justify-content: flex-end; margin-top: 10px; }
   .grid tfoot td:not(.sum) { display: none; }
   .grid tfoot td.sum { min-width: 160px; padding: 8px 10px; font-size: 16px; }
+  .grid.eb tbody td, .grid.eb tbody td + td { border: 0; }
+  .grid.eb tfoot td { border: 0; }
+  .grid.eb tfoot td.sum { border-top: 1.5px solid #000; border-bottom: 3px double #000; }
+  .grid tfoot td.tl { display: block; align-self: center; margin-right: 12px; font-weight: 700; }
 
   .r-meal  { grid-template-areas: "date date date" "from to hrs" "place place place" "amount amount rm"; }
   .r-other { grid-template-areas: "period period period" "text text text" "amount amount rm"; }
   .r-beleg { grid-template-areas: "date date date" "text text text" "amount amount rm"; }
   .r-km    { grid-template-areas: "date date date" "dest dest dest" "km km rm"; }
+  .r-eigen { grid-template-areas: "date date date" "text text text" "amount amount rm"; }
   td[data-c="date"] { grid-area: date; }
   td[data-c="from"] { grid-area: from; }
   td[data-c="to"] { grid-area: to; }
@@ -293,7 +308,7 @@ body {
   .opt input { width: 22px; height: 22px; flex: none; }
 
   .p-sign { flex-direction: column; align-items: stretch; gap: 26px; }
-  .sg-date, .sg-sig { width: 100%; }
+  .sg-date, .sg-sig, .sg-city { width: 100%; }
   .sg-top input { height: 44px; padding: 6px 10px; font-size: 16px; border: 1px solid #aab3bf; border-radius: 6px; }
 }
 

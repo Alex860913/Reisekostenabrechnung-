@@ -9,13 +9,16 @@ Person, die die Abrechnung ausfüllt und unterschreibt.
 Freitext, zu welchem Projekt oder Vorgang die Abrechnung gehört.
 
 **Abrechnungsart**
-Eine der drei Vorlagen: Spesenabrechnung, Abrechnung gegen Beleg oder KM-Abrechnung.
+Eine der vier Vorlagen: Spesenabrechnung, Abrechnung gegen Beleg, KM-Abrechnung oder Eigenbeleg.
 
 **Spesenabrechnung**
 Vorlage für pauschale Erstattungen, die mit der Lohnabrechnung ausgezahlt werden.
 
 **Abrechnung gegen Beleg**
 Vorlage für Auslagen, die mit Original-Belegen nachgewiesen und überwiesen werden.
+
+**Eigenbeleg**
+Vorlage für Ausgaben, für die es keinen Beleg gibt. Der Mitarbeiter bestätigt sie selbst mit Ort, Datum und Unterschrift.
 
 **KM-Abrechnung**
 Vorlage für Dienstfahrten mit dem privaten PKW.

@@ -4,15 +4,16 @@
   var KM_RATE = 0.30;
   var LOCALES = { de: 'de-DE', en: 'en-GB', ru: 'ru-RU' };
   var LANG_NAMES = { de: 'Deutsch', en: 'English', ru: 'Kyrillisch' };
-  var TYPES = ['spesen', 'beleg', 'km'];
-  var FILE_NAMES = { spesen: 'Spesenabrechnung', beleg: 'Abrechnung_gegen_Beleg', km: 'KM-Abrechnung' };
-  var LIMITS = { meal: 20, other: 2, beleg: 17, km: 11 };
-  var START = { meal: 6, other: 2, beleg: 8, km: 6 };
+  var TYPES = ['spesen', 'beleg', 'km', 'eigen'];
+  var FILE_NAMES = { spesen: 'Spesenabrechnung', beleg: 'Abrechnung_gegen_Beleg', km: 'KM-Abrechnung', eigen: 'Eigenbeleg' };
+  var LIMITS = { meal: 20, other: 2, beleg: 17, km: 11, eigen: 12 };
+  var START = { meal: 6, other: 2, beleg: 8, km: 6, eigen: 12 };
   var BLANK = {
     meal: function () { return { date: '', from: '', to: '', place: '', amount: '' }; },
     other: function () { return { period: '', text: '', amount: '' }; },
     beleg: function () { return { date: '', text: '', amount: '' }; },
-    km: function () { return { date: '', dest: '', km: '' }; }
+    km: function () { return { date: '', dest: '', km: '' }; },
+    eigen: function () { return { date: '', text: '', amount: '' }; }
   };
   var SIG_RE = /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/;
 
@@ -33,7 +34,7 @@
         btnPdfAlt: 'Druckfertige Datei sichern',
         readyFile: 'Bereit. Die gesicherte Datei öffnen Sie im Browser und drucken sie dort als PDF (Strg+P).',
         saved: 'Gesichert.', saveErr: 'Das Sichern hat nicht geklappt.',
-        t: { spesen: 'Spesenabrechnung', beleg: 'Abrechnung gegen Beleg', km: 'KM-Abrechnung' }
+        t: { spesen: 'Spesenabrechnung', beleg: 'Abrechnung gegen Beleg', km: 'KM-Abrechnung', eigen: 'Eigenbeleg' }
       },
       f: {
         name: 'Name:', occasion: 'Projektname / Vorgang:', date: 'Datum', signature: 'Unterschrift Mitarbeiter',
@@ -52,7 +53,8 @@
         beTitle: 'Abrechnung gegen Beleg', beSec: 'b.) Sonstiges / Auslagen', beSecNote: '(Original-Belege beigefügt):', bePay: 'Überweisung',
         kmTitle: 'KM-Abrechnung', kmIntro: 'Pauschale Kostenerstattung für Dienstfahrten im betrieblichen Auftrag',
         kmPlate: "poliz. Kennz. des priv. PKW's:", kmDest: 'Ziel der Fahrt (Firma, Ort)', kmCol: 'KM',
-        kmSum: 'Summe gefahrene Kilometer:', kmEur: 'Summe in Euro:', kmUnit: 'KM', kmLa: 'LA 51)'
+        kmSum: 'Summe gefahrene Kilometer:', kmEur: 'Summe in Euro:', kmUnit: 'KM', kmLa: 'LA 51)',
+        eiTitle: 'Eigenbeleg', eiCol: 'Ausgaben ohne Beleg:', eiTotal: 'total', eiPlace: 'Ort:', eiDate: 'Datum:', eiSign: 'Unterschrift'
       }
     },
     en: {
@@ -70,7 +72,7 @@
         btnPdfAlt: 'Save print-ready file',
         readyFile: 'Ready. Open the saved file in your browser and print it as PDF there (Ctrl+P).',
         saved: 'Saved.', saveErr: 'Saving did not work.',
-        t: { spesen: 'Flat-rate allowances', beleg: 'Reimbursement against receipts', km: 'Mileage claim' }
+        t: { spesen: 'Flat-rate allowances', beleg: 'Reimbursement against receipts', km: 'Mileage claim', eigen: 'Self-issued receipt' }
       },
       f: {
         name: 'Name:', occasion: 'Project name / reference:', date: 'Date', signature: 'Employee signature',
@@ -89,7 +91,8 @@
         beTitle: 'Reimbursement against receipts', beSec: 'b.) Other / expenses', beSecNote: '(original receipts attached):', bePay: 'Bank transfer',
         kmTitle: 'Mileage claim', kmIntro: 'Flat-rate reimbursement for business trips in a private car',
         kmPlate: 'Licence plate of private car:', kmDest: 'Destination (company, place)', kmCol: 'KM',
-        kmSum: 'Total kilometres driven:', kmEur: 'Total in euros:', kmUnit: 'KM', kmLa: 'LA 51)'
+        kmSum: 'Total kilometres driven:', kmEur: 'Total in euros:', kmUnit: 'KM', kmLa: 'LA 51)',
+        eiTitle: 'Self-issued receipt', eiCol: 'Expenses without receipt:', eiTotal: 'total', eiPlace: 'Place:', eiDate: 'Date:', eiSign: 'Signature'
       }
     },
     ru: {
@@ -107,7 +110,7 @@
         btnPdfAlt: 'Сохранить файл для печати',
         readyFile: 'Готово. Откройте сохранённый файл в браузере и распечатайте его в PDF (Ctrl+P).',
         saved: 'Сохранено.', saveErr: 'Не удалось сохранить.',
-        t: { spesen: 'Суточные и пауш. расходы', beleg: 'Возмещение по чекам', km: 'Возмещение за километраж' }
+        t: { spesen: 'Суточные и пауш. расходы', beleg: 'Возмещение по чекам', km: 'Возмещение за километраж', eigen: 'Собственный документ (без чека)' }
       },
       f: {
         name: 'ФИО:', occasion: 'Название проекта / дело:', date: 'Дата', signature: 'Подпись сотрудника',
@@ -126,7 +129,8 @@
         beTitle: 'Возмещение расходов по чекам', beSec: 'б.) Прочее / расходы', beSecNote: '(оригиналы чеков приложены):', bePay: 'Банковский перевод',
         kmTitle: 'Отчёт о километраже', kmIntro: 'Пауш. возмещение расходов на служебные поездки по поручению предприятия',
         kmPlate: 'Гос. номер личного автомобиля:', kmDest: 'Цель поездки (фирма, город)', kmCol: 'КМ',
-        kmSum: 'Всего пройдено километров:', kmEur: 'Сумма в евро:', kmUnit: 'км', kmLa: 'LA 51)'
+        kmSum: 'Всего пройдено километров:', kmEur: 'Сумма в евро:', kmUnit: 'км', kmLa: 'LA 51)',
+        eiTitle: 'Собственный документ (без чека)', eiCol: 'Расходы без чека:', eiTotal: 'итого', eiPlace: 'Место:', eiDate: 'Дата:', eiSign: 'Подпись'
       }
     }
   };
@@ -149,8 +153,8 @@
 
   var state = {
     lang: 'de', type: 'spesen',
-    name: '', occasion: '', date: localToday(), sig: null, plate: '',
-    meal: makeRows('meal'), other: makeRows('other'), beleg: makeRows('beleg'), km: makeRows('km'),
+    name: '', occasion: '', city: '', date: localToday(), sig: null, plate: '',
+    meal: makeRows('meal'), other: makeRows('other'), beleg: makeRows('beleg'), km: makeRows('km'), eigen: makeRows('eigen'),
     hosp: { spesen: blankHosp(), beleg: blankHosp() }
   };
 
@@ -318,8 +322,33 @@
       '</div>' + signBlock(true);
   }
 
+  function paperEigen() {
+    var f = T().f;
+    var body = state.eigen.map(function (r, i) {
+      return '<tr class="r-eigen"><td data-c="date" data-label="' + esc(f.colDate) + '">' + cell('eigen', i, 'date', 'date', r.date, f.colDate) + '</td>' +
+        '<td data-c="text" data-label="' + esc(f.eiCol) + '">' + cell('eigen', i, 'text', 'text', r.text, f.eiCol) + '</td>' +
+        '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('eigen', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('eigen', i) + '</tr>';
+    }).join('');
+    var img = state.sig ? '<img src="' + esc(state.sig) + '" alt="">' : '';
+    return '<h2 class="p-title">' + esc(f.eiTitle) + '</h2>' +
+      '<div class="p-meta">' +
+      '<label class="line"><span>' + esc(f.name) + '</span><input type="text" id="f-name" data-k="name" autocomplete="name" value="' + esc(state.name) + '"></label>' +
+      '<label class="line"><span>' + esc(f.occasion) + '</span><input type="text" id="f-occasion" data-k="occasion" value="' + esc(state.occasion) + '"></label>' +
+      '</div>' +
+      '<table class="grid eb"><colgroup><col class="c-date"><col><col class="c-amt"><col class="noprint c-rm"></colgroup>' +
+      '<thead><tr><th>' + esc(f.colDate) + '</th><th>' + esc(f.eiCol) + '</th><th class="t-r">€</th><th class="noprint c-rm"></th></tr></thead>' +
+      '<tbody>' + body + '</tbody>' +
+      '<tfoot><tr><td class="tl" colspan="2">' + esc(f.eiTotal) + '</td><td class="sum"><output id="tot"></output></td><td class="noprint"></td></tr></tfoot></table>' +
+      addBtn('eigen') +
+      '<div class="p-sign eb-sign">' +
+      '<div class="sg sg-city"><div class="sg-top"><input type="text" id="f-city" data-k="city" value="' + esc(state.city) + '" aria-label="' + esc(f.eiPlace) + '"></div><div class="sg-line"></div><span>' + esc(f.eiPlace) + '</span></div>' +
+      '<div class="sg sg-date"><div class="sg-top"><input type="date" id="f-date" data-k="date" value="' + esc(state.date) + '" aria-label="' + esc(f.eiDate) + '"></div><div class="sg-line"></div><span>' + esc(f.eiDate) + '</span></div>' +
+      '<div class="sg sg-sig"><div class="sg-top">' + img + '</div><div class="sg-line"></div><span>' + esc(f.eiSign) + '</span></div></div>';
+  }
+
   function renderPaper() {
-    paperEl.innerHTML = state.type === 'spesen' ? paperSpesen() : state.type === 'beleg' ? paperBeleg() : paperKm();
+    var build = { spesen: paperSpesen, beleg: paperBeleg, km: paperKm, eigen: paperEigen };
+    paperEl.innerHTML = build[state.type]();
     calc();
   }
 
@@ -336,6 +365,8 @@
       setOut('tot', fmtEur(Math.round((s1 + s2) * 100) / 100));
     } else if (state.type === 'beleg') {
       setOut('tot', fmtEur(sum(state.beleg, 'amount')));
+    } else if (state.type === 'eigen') {
+      setOut('tot', fmtEur(sum(state.eigen, 'amount')));
     } else {
       var km = sum(state.km, 'km');
       var eur = Math.round(km * KM_RATE * 100) / 100;
@@ -523,8 +554,8 @@
   $('#btn-json').addEventListener('click', function () {
     var data = {
       version: 1, lang: state.lang, type: state.type,
-      name: state.name, occasion: state.occasion, date: state.date, plate: state.plate,
-      meal: state.meal, other: state.other, beleg: state.beleg, km: state.km,
+      name: state.name, occasion: state.occasion, city: state.city, date: state.date, plate: state.plate,
+      meal: state.meal, other: state.other, beleg: state.beleg, km: state.km, eigen: state.eigen,
       hosp: state.hosp, sig: state.sig
     };
     var json = JSON.stringify(data, null, 2);
@@ -542,7 +573,7 @@
     if (!d || typeof d !== 'object') throw new Error('invalid');
     if (LANG_NAMES[d.lang]) state.lang = d.lang;
     if (TYPES.indexOf(d.type) > -1) state.type = d.type;
-    ['name', 'occasion', 'date', 'plate'].forEach(function (k) { state[k] = str(d[k]); });
+    ['name', 'occasion', 'city', 'date', 'plate'].forEach(function (k) { state[k] = str(d[k]); });
     Object.keys(LIMITS).forEach(function (k) {
       if (!Array.isArray(d[k])) return;
       var rows = d[k].slice(0, LIMITS[k]).map(function (r) {

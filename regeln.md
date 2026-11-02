@@ -10,8 +10,9 @@ Begriffe stehen in `GLOSSARY.md`.
 - Kilometergeld = Summe der Kilometer × 0,30 €.
 - Summe der Spesenabrechnung = Summe Verpflegungsmehraufwand + Summe sonstige pauschale Erstattungen (LA 9976, steuerfrei).
 - Summe der Abrechnung gegen Beleg = Summe aller Auslagen. Sie wird überwiesen.
+- Summe des Eigenbelegs = Summe aller Ausgaben ohne Beleg.
 - Bewirtung zählt für Frühstück mit 20 %, für Mittag- und Abendessen mit je 40 %.
-- Zeilenlimits je Vorlage: Verpflegung 20, sonstige Pauschalen 2, Auslagen 17, Fahrten 11.
+- Zeilenlimits je Vorlage: Verpflegung 20, sonstige Pauschalen 2, Auslagen 17, Fahrten 11, Eigenbeleg 12.
 - Alle Eingaben bleiben auf dem Gerät. Es gibt keine Übertragung ins Netz.
 
 ## Offene Punkte
