@@ -56,6 +56,7 @@
         kmPlate: "poliz. Kennz. des priv. PKW's:", kmDest: 'Ziel der Fahrt (Firma, Ort)', kmCol: 'KM',
         kmSum: 'Summe gefahrene Kilometer:', kmEur: 'Summe in Euro:', kmUnit: 'KM', kmLa: 'LA 51)',
         destLabel: 'Ort / Land:', destHome: 'Deutschland (Inland)',
+        rate14: 'Abwesenheit über 14 h', rate24: 'Abwesenheit über 24 h', rateNone: 'Inland: 14 € über 14 h, 28 € über 24 h.',
         eiTitle: 'Eigenbeleg', eiCol: 'Ausgaben ohne Beleg:', eiTotal: 'total', eiPlace: 'Ort:', eiDate: 'Datum:', eiSign: 'Unterschrift'
       }
     },
@@ -96,6 +97,7 @@
         kmPlate: 'Licence plate of private car:', kmDest: 'Destination (company, place)', kmCol: 'KM',
         kmSum: 'Total kilometres driven:', kmEur: 'Total in euros:', kmUnit: 'KM', kmLa: 'LA 51)',
         destLabel: 'Place / country:', destHome: 'Germany (domestic)',
+        rate14: 'Absence over 14 h', rate24: 'Absence over 24 h', rateNone: 'The list has no amounts for domestic trips.',
         eiTitle: 'Self-issued receipt', eiCol: 'Expenses without receipt:', eiTotal: 'total', eiPlace: 'Place:', eiDate: 'Date:', eiSign: 'Signature'
       }
     },
@@ -136,6 +138,7 @@
         kmPlate: 'Гос. номер личного автомобиля:', kmDest: 'Цель поездки (фирма, город)', kmCol: 'КМ',
         kmSum: 'Всего пройдено километров:', kmEur: 'Сумма в евро:', kmUnit: 'км', kmLa: 'LA 51)',
         destLabel: 'Место / страна:', destHome: 'Германия (внутри страны)',
+        rate14: 'Отсутствие более 14 ч', rate24: 'Отсутствие более 24 ч', rateNone: 'Для поездок по Германии в списке нет сумм.',
         eiTitle: 'Собственный документ (без чека)', eiCol: 'Расходы без чека:', eiTotal: 'итого', eiPlace: 'Место:', eiDate: 'Дата:', eiSign: 'Подпись'
       }
     }
@@ -230,14 +233,30 @@
   function destList() {
     var out = [];
     (window.ORTE || []).forEach(function (e) {
-      if (e[1]) e[1].forEach(function (o) { out.push({ group: e[0], value: e[0] + ' – ' + o, label: e[0] + ' – ' + o }); });
-      else out.push({ group: '', value: e[0], label: e[0] });
+      if (Array.isArray(e[1])) e[1].forEach(function (o) {
+        out.push({ group: e[0], value: e[0] + ' – ' + o[0], label: e[0] + ' – ' + o[0], r24: o[1], r8: o[2] });
+      });
+      else out.push({ group: '', value: e[0], label: e[0], r24: e[1], r8: e[2] });
     });
     return out;
   }
   function destValid(v) {
     return v === HOME || destList().some(function (d) { return d.value === v; });
   }
+  /* Zeigt die Beträge des gewählten Ortes: über 14 h = Spalte "mehr als 8 Stunden / An- und Abreisetag", über 24 h = Spalte "mindestens 24 Stunden". */
+  function ratesHtml() {
+    var f = T().f;
+    if (!state.dest) return '';
+    var hit = state.dest === HOME ? { r8: 14, r24: 28 } : destList().filter(function (d) { return d.value === state.dest; })[0];
+    if (!hit) return '';
+    return '<div><span>' + esc(f.rate14) + '</span><b>' + esc(fmtEur(hit.r8)) + '</b></div>' +
+      '<div><span>' + esc(f.rate24) + '</span><b>' + esc(fmtEur(hit.r24)) + '</b></div>';
+  }
+  function updateRates() {
+    var el = paperEl.querySelector('#dest-rates');
+    if (el) el.innerHTML = ratesHtml();
+  }
+
   function destSelect() {
     var f = T().f, ui = T().ui;
     var html = '<select id="f-dest" data-k="dest" aria-label="' + esc(f.destLabel) + '">' +
@@ -263,7 +282,8 @@
       '<div class="p-meta">' +
       '<label class="line"><span>' + esc(f.name) + '</span><input type="text" id="f-name" data-k="name" autocomplete="name" value="' + esc(state.name) + '"></label>' +
       '<label class="line"><span>' + esc(f.occasion) + '</span><input type="text" id="f-occasion" data-k="occasion" value="' + esc(state.occasion) + '"></label>' +
-      (withDest ? '<label class="line"><span>' + esc(f.destLabel) + '</span>' + destSelect() + '</label>' : '') +
+      (withDest ? '<label class="line"><span>' + esc(f.destLabel) + '</span>' + destSelect() + '</label>' +
+        '<div class="rates" id="dest-rates" aria-live="polite">' + ratesHtml() + '</div>' : '') +
       '</div>';
   }
 
@@ -471,6 +491,7 @@
     if (el.dataset.i !== undefined) state[k][+el.dataset.i][el.dataset.f] = v;
     else if (k === 'hosp') state.hosp[el.dataset.t][el.dataset.f] = v;
     else state[k] = v;
+    if (k === 'dest') updateRates();
     calc();
     updateStatus();
   });

@@ -29,7 +29,7 @@ Bei einem privaten Repository ist GitHub Pages nur mit bestimmten GitHub-Tarifen
 | --- | --- |
 | `index.html` | Seitengerüst und Content-Security-Policy |
 | `style.css` | Oberfläche und Druck-Layout |
-| `orte.js` | Liste der Länder und Orte für die Auswahl „Ort / Land“ (aus der Übersicht der Auslandspauschalen 2026) |
+| `orte.js` | Länder, Orte und Pauschbeträge (über 8 h / 24 h) für die Auswahl „Ort / Land“ (aus der Übersicht der Auslandspauschalen 2026) |
 | `app.js` | Texte in drei Sprachen, Formulare, Berechnung, Unterschrift, Sichern |
 | `GLOSSARY.md` | Begriffe der Reisekostenabrechnung, abgeleitet aus den Vorlagen |
 | `docs/regeln.md` | Regeln und offene Punkte |

@@ -142,6 +142,11 @@ body {
 .line { display: grid; grid-template-columns: 200px minmax(0, 1fr); align-items: end; gap: 8px; }
 .line input, .line select { max-width: 440px; width: 100%; border-bottom: 1.5px solid #111; padding: 3px 2px; }
 .line select { font: inherit; color: inherit; background: transparent; border: 0; border-bottom: 1.5px solid #111; border-radius: 0; margin: 0; min-width: 0; height: 26px; }
+.rates { margin: -8px 0 0 208px; max-width: 440px; display: grid; gap: 2px; font-size: 12px; }
+.rates:empty { display: none; }
+.rates > div { display: flex; justify-content: space-between; gap: 12px; padding: 1px 2px; border-bottom: 1px dotted #9aa1ab; }
+.rates b { font-variant-numeric: tabular-nums; }
+.rates .none { color: #4a5565; font-style: italic; border-bottom: 0; }
 .paper select:focus { outline: 2px solid #c98a00; outline-offset: -2px; background: #fffbe6; }
 
 .p-sec { margin: 24px 0 0; font-size: 13px; }
@@ -259,7 +264,7 @@ body {
   .grid, .grid tbody, .grid tfoot, .grid tr, .grid td { display: block; }
   .grid colgroup, .grid thead { display: none; }
   .grid tbody tr {
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
     margin-top: 10px; padding: 10px;
     border: 1px solid #aab3bf; border-radius: 8px; background: #f7f9fb;
   }
@@ -271,6 +276,14 @@ body {
   }
   .grid td.c-rm { width: auto; padding: 0; align-self: end; justify-self: end; }
   .rm { width: 44px; height: 44px; font-size: 22px; }
+  .paper input[type=date], .paper input[type=time] {
+    -webkit-appearance: none; appearance: none; display: block;
+    width: 100%; min-width: 0; max-width: 100%; min-height: 44px; margin: 0;
+  }
+  .paper input[type=date]::-webkit-date-and-time-value,
+  .paper input[type=time]::-webkit-date-and-time-value { text-align: left; min-height: 1.4em; margin: 0; }
+  .rates { margin: -6px 0 0; max-width: none; font-size: 14px; }
+  .rates > div { padding: 4px 2px; }
   .add { height: 44px; padding: 0 16px; font-size: 14px; }
   .grid tfoot tr { display: flex; justify-content: flex-end; margin-top: 10px; }
   .grid tfoot td:not(.sum) { display: none; }
@@ -280,11 +293,11 @@ body {
   .grid.eb tfoot td.sum { border-top: 1.5px solid #000; border-bottom: 3px double #000; }
   .grid tfoot td.tl { display: block; align-self: center; margin-right: 12px; font-weight: 700; }
 
-  .r-meal  { grid-template-areas: "date date date" "from to hrs" "amount amount rm"; }
-  .r-other { grid-template-areas: "period period period" "text text text" "amount amount rm"; }
-  .r-beleg { grid-template-areas: "date date date" "text text text" "amount amount rm"; }
-  .r-km    { grid-template-areas: "date date date" "dest dest dest" "km km rm"; }
-  .r-eigen { grid-template-areas: "date date date" "text text text" "amount amount rm"; }
+  .r-meal  { grid-template-areas: "date date" "from to" "hrs amount" "rm rm"; }
+  .r-other { grid-template-areas: "period period" "text text" "amount rm"; }
+  .r-beleg { grid-template-areas: "date date" "text text" "amount rm"; }
+  .r-km    { grid-template-areas: "date date" "dest dest" "km rm"; }
+  .r-eigen { grid-template-areas: "date date" "text text" "amount rm"; }
   td[data-c="date"] { grid-area: date; }
   td[data-c="from"] { grid-area: from; }
   td[data-c="to"] { grid-area: to; }
@@ -315,6 +328,12 @@ body {
   .p-sign { flex-direction: column; align-items: stretch; gap: 26px; }
   .sg-date, .sg-sig, .sg-city { width: 100%; }
   .sg-top input { height: 44px; padding: 6px 10px; font-size: 16px; border: 1px solid #aab3bf; border-radius: 6px; }
+}
+
+@media screen and (max-width: 380px) {
+  .step { padding: 12px 10px 14px; }
+  .paper { padding: 12px 10px 18px; }
+  .grid tbody tr { padding: 8px; gap: 6px; }
 }
 
 /* Druck / PDF-Auszug */

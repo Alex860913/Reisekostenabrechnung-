@@ -9,7 +9,10 @@ Person, die die Abrechnung ausfüllt und unterschreibt.
 Freitext, zu welchem Projekt oder Vorgang die Abrechnung gehört.
 
 **Ort / Land**
-Ziel der Reise, einmal oben auf der Spesenabrechnung aus einer Liste gewählt. Die Liste entspricht der Übersicht der Auslandspauschalen ab 1. Januar 2026 und enthält zusätzlich „Deutschland (Inland)“.
+Ziel der Reise, einmal oben auf der Spesenabrechnung aus einer Liste gewählt. Die Liste entspricht der Übersicht der Auslandspauschalen ab 1. Januar 2026 und enthält zusätzlich „Deutschland (Inland)“. Darunter werden die Pauschbeträge des Ziels angezeigt.
+
+**Pauschbetrag Ausland**
+Tagessatz je Land oder Ort laut Übersicht. „Abwesenheit über 14 h“ entspricht der Spalte „über 8 Stunden“, „Abwesenheit über 24 h“ der Spalte „mindestens 24 Stunden“.
 
 **Abrechnungsart**
 Eine der vier Vorlagen: Spesenabrechnung, Abrechnung gegen Beleg, KM-Abrechnung oder Eigenbeleg.
