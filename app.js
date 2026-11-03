@@ -56,7 +56,7 @@
         kmPlate: "poliz. Kennz. des priv. PKW's:", kmDest: 'Ziel der Fahrt (Firma, Ort)', kmCol: 'KM',
         kmSum: 'Summe gefahrene Kilometer:', kmEur: 'Summe in Euro:', kmUnit: 'KM', kmLa: 'LA 51)',
         destLabel: 'Ort / Land:', destHome: 'Deutschland (Inland)',
-        rate14: 'Abwesenheit über 14 h', rate24: 'Abwesenheit über 24 h', rateNone: 'Für das Inland enthält die Liste keine Beträge.',
+        rate14: 'Abwesenheit über 14 h', rate24: 'Abwesenheit über 24 h', rateNone: 'Inland: 14 € über 14 h, 28 € über 24 h.',
         eiTitle: 'Eigenbeleg', eiCol: 'Ausgaben ohne Beleg:', eiTotal: 'total', eiPlace: 'Ort:', eiDate: 'Datum:', eiSign: 'Unterschrift'
       }
     },
@@ -247,8 +247,7 @@
   function ratesHtml() {
     var f = T().f;
     if (!state.dest) return '';
-    if (state.dest === HOME) return '<div class="none">' + esc(f.rateNone) + '</div>';
-    var hit = destList().filter(function (d) { return d.value === state.dest; })[0];
+    var hit = state.dest === HOME ? { r8: 14, r24: 28 } : destList().filter(function (d) { return d.value === state.dest; })[0];
     if (!hit) return '';
     return '<div><span>' + esc(f.rate14) + '</span><b>' + esc(fmtEur(hit.r8)) + '</b></div>' +
       '<div><span>' + esc(f.rate24) + '</span><b>' + esc(fmtEur(hit.r24)) + '</b></div>';
