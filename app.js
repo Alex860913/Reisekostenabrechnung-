@@ -9,7 +9,7 @@
   var LIMITS = { meal: 20, other: 2, beleg: 17, km: 11, eigen: 12 };
   var START = { meal: 6, other: 2, beleg: 8, km: 6, eigen: 12 };
   var BLANK = {
-    meal: function () { return { date: '', from: '', to: '', place: '', amount: '' }; },
+    meal: function () { return { date: '', from: '', to: '', amount: '' }; },
     other: function () { return { period: '', text: '', amount: '' }; },
     beleg: function () { return { date: '', text: '', amount: '' }; },
     km: function () { return { date: '', dest: '', km: '' }; },
@@ -30,6 +30,7 @@
         btnPdf: 'PDF-Auszug sichern', btnJson: 'Daten als Datei sichern', btnLoad: 'Gesicherte Daten laden',
         missing: 'Zum Sichern fehlt noch: ', ready: 'Bereit. Beim PDF-Auszug wählen Sie im Druckdialog „Als PDF speichern“.',
         fName: 'Name', fOccasion: 'Projektname / Vorgang', fSignature: 'Unterschrift',
+        pick: 'Bitte wählen',
         loadOk: 'Daten geladen.', loadErr: 'Die Datei konnte nicht gelesen werden.',
         btnPdfAlt: 'Druckfertige Datei sichern',
         readyFile: 'Bereit. Die gesicherte Datei öffnen Sie im Browser und drucken sie dort als PDF (Strg+P).',
@@ -54,6 +55,7 @@
         kmTitle: 'KM-Abrechnung', kmIntro: 'Pauschale Kostenerstattung für Dienstfahrten im betrieblichen Auftrag',
         kmPlate: "poliz. Kennz. des priv. PKW's:", kmDest: 'Ziel der Fahrt (Firma, Ort)', kmCol: 'KM',
         kmSum: 'Summe gefahrene Kilometer:', kmEur: 'Summe in Euro:', kmUnit: 'KM', kmLa: 'LA 51)',
+        destLabel: 'Ort / Land:', destHome: 'Deutschland (Inland)',
         eiTitle: 'Eigenbeleg', eiCol: 'Ausgaben ohne Beleg:', eiTotal: 'total', eiPlace: 'Ort:', eiDate: 'Datum:', eiSign: 'Unterschrift'
       }
     },
@@ -68,6 +70,7 @@
         btnPdf: 'Save PDF extract', btnJson: 'Save data as file', btnLoad: 'Load saved data',
         missing: 'Still missing before saving: ', ready: 'Ready. For the PDF extract, choose “Save as PDF” in the print dialog.',
         fName: 'Name', fOccasion: 'Project name / reference', fSignature: 'Signature',
+        pick: 'Please select',
         loadOk: 'Data loaded.', loadErr: 'The file could not be read.',
         btnPdfAlt: 'Save print-ready file',
         readyFile: 'Ready. Open the saved file in your browser and print it as PDF there (Ctrl+P).',
@@ -92,6 +95,7 @@
         kmTitle: 'Mileage claim', kmIntro: 'Flat-rate reimbursement for business trips in a private car',
         kmPlate: 'Licence plate of private car:', kmDest: 'Destination (company, place)', kmCol: 'KM',
         kmSum: 'Total kilometres driven:', kmEur: 'Total in euros:', kmUnit: 'KM', kmLa: 'LA 51)',
+        destLabel: 'Place / country:', destHome: 'Germany (domestic)',
         eiTitle: 'Self-issued receipt', eiCol: 'Expenses without receipt:', eiTotal: 'total', eiPlace: 'Place:', eiDate: 'Date:', eiSign: 'Signature'
       }
     },
@@ -106,6 +110,7 @@
         btnPdf: 'Сохранить выписку в PDF', btnJson: 'Сохранить данные в файл', btnLoad: 'Загрузить сохранённые данные',
         missing: 'Для сохранения ещё не хватает: ', ready: 'Готово. Для PDF в окне печати выберите «Сохранить как PDF».',
         fName: 'ФИО', fOccasion: 'Название проекта / дело', fSignature: 'Подпись',
+        pick: 'Выберите',
         loadOk: 'Данные загружены.', loadErr: 'Не удалось прочитать файл.',
         btnPdfAlt: 'Сохранить файл для печати',
         readyFile: 'Готово. Откройте сохранённый файл в браузере и распечатайте его в PDF (Ctrl+P).',
@@ -130,6 +135,7 @@
         kmTitle: 'Отчёт о километраже', kmIntro: 'Пауш. возмещение расходов на служебные поездки по поручению предприятия',
         kmPlate: 'Гос. номер личного автомобиля:', kmDest: 'Цель поездки (фирма, город)', kmCol: 'КМ',
         kmSum: 'Всего пройдено километров:', kmEur: 'Сумма в евро:', kmUnit: 'км', kmLa: 'LA 51)',
+        destLabel: 'Место / страна:', destHome: 'Германия (внутри страны)',
         eiTitle: 'Собственный документ (без чека)', eiCol: 'Расходы без чека:', eiTotal: 'итого', eiPlace: 'Место:', eiDate: 'Дата:', eiSign: 'Подпись'
       }
     }
@@ -153,7 +159,7 @@
 
   var state = {
     lang: 'de', type: 'spesen',
-    name: '', occasion: '', city: '', date: localToday(), sig: null, plate: '',
+    name: '', occasion: '', dest: '', city: '', date: localToday(), sig: null, plate: '',
     meal: makeRows('meal'), other: makeRows('other'), beleg: makeRows('beleg'), km: makeRows('km'), eigen: makeRows('eigen'),
     hosp: { spesen: blankHosp(), beleg: blankHosp() }
   };
@@ -219,13 +225,45 @@
       ' value="' + esc(value) + '" aria-label="' + esc(label) + '">';
   }
 
-  function headBlock(title) {
+  /* Orte und Länder kommen aus orte.js. Gespeichert wird immer der deutsche Name. */
+  var HOME = 'Deutschland (Inland)';
+  function destList() {
+    var out = [];
+    (window.ORTE || []).forEach(function (e) {
+      if (e[1]) e[1].forEach(function (o) { out.push({ group: e[0], value: e[0] + ' – ' + o, label: e[0] + ' – ' + o }); });
+      else out.push({ group: '', value: e[0], label: e[0] });
+    });
+    return out;
+  }
+  function destValid(v) {
+    return v === HOME || destList().some(function (d) { return d.value === v; });
+  }
+  function destSelect() {
+    var f = T().f, ui = T().ui;
+    var html = '<select id="f-dest" data-k="dest" aria-label="' + esc(f.destLabel) + '">' +
+      '<option value="">' + esc(ui.pick) + '</option>' +
+      '<option value="' + esc(HOME) + '"' + (state.dest === HOME ? ' selected' : '') + '>' + esc(f.destHome) + '</option>';
+    var group = null;
+    destList().forEach(function (d) {
+      if (d.group !== group) {
+        if (group) html += '</optgroup>';
+        if (d.group) html += '<optgroup label="' + esc(d.group) + '">';
+        group = d.group;
+      }
+      html += '<option value="' + esc(d.value) + '"' + (state.dest === d.value ? ' selected' : '') + '>' + esc(d.label) + '</option>';
+    });
+    if (group) html += '</optgroup>';
+    return html + '</select>';
+  }
+
+  function headBlock(title, withDest) {
     var f = T().f;
     return '<div class="p-head"><h2 class="p-title">' + esc(title) + '</h2>' +
       '<address class="p-company">LETHE Exterior Doors GmbH<br>Marschgehren 14<br>28779 Bremen</address></div>' +
       '<div class="p-meta">' +
       '<label class="line"><span>' + esc(f.name) + '</span><input type="text" id="f-name" data-k="name" autocomplete="name" value="' + esc(state.name) + '"></label>' +
       '<label class="line"><span>' + esc(f.occasion) + '</span><input type="text" id="f-occasion" data-k="occasion" value="' + esc(state.occasion) + '"></label>' +
+      (withDest ? '<label class="line"><span>' + esc(f.destLabel) + '</span>' + destSelect() + '</label>' : '') +
       '</div>';
   }
 
@@ -261,26 +299,25 @@
         '<td data-c="from" data-label="' + esc(f.colFrom) + '">' + cell('meal', i, 'from', 'time', r.from, f.colFrom) + '</td>' +
         '<td data-c="to" data-label="' + esc(f.colTo) + '">' + cell('meal', i, 'to', 'time', r.to, f.colTo) + '</td>' +
         '<td class="num" data-c="hrs" data-label="' + esc(f.colHours) + '"><output data-hours="' + i + '"></output></td>' +
-        '<td data-c="place" data-label="' + esc(f.colPlace) + '">' + cell('meal', i, 'place', 'text', r.place, f.colPlace) + '</td>' +
         '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('meal', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('meal', i) + '</tr>';
     }).join('');
     var other = state.other.map(function (r, i) {
       return '<tr class="r-other"><td data-c="period" data-label="' + esc(f.colPeriod) + '">' + cell('other', i, 'period', 'text', r.period, f.colPeriod) + '</td>' +
-        '<td colspan="4" data-c="text" data-label="' + esc(f.colText) + '">' + cell('other', i, 'text', 'text', r.text, f.colText) + '</td>' +
+        '<td colspan="3" data-c="text" data-label="' + esc(f.colText) + '">' + cell('other', i, 'text', 'text', r.text, f.colText) + '</td>' +
         '<td data-c="amount" data-label="' + esc(f.colAmount) + '">' + cell('other', i, 'amount', 'text', r.amount, f.colAmount, 'num') + '</td>' + rmCell('other', i) + '</tr>';
     }).join('');
-    return headBlock(f.spTitle) +
+    return headBlock(f.spTitle, true) +
       '<h3 class="p-sec">' + esc(f.spS1) + '</h3><p class="p-note">' + esc(f.spS1Note) + '</p>' +
-      '<table class="grid"><colgroup><col class="c-date"><col class="c-time"><col class="c-time"><col class="c-hrs"><col><col class="c-amt"><col class="noprint c-rm"></colgroup>' +
+      '<table class="grid"><colgroup><col class="m-date"><col class="m-time"><col class="m-time"><col class="m-hrs"><col class="m-amt"><col class="noprint c-rm"></colgroup>' +
       '<thead><tr><th rowspan="2">' + esc(f.colDate) + '</th><th colspan="2">' + esc(f.colTime) + '</th><th rowspan="2">' + esc(f.colHours) +
-      '</th><th rowspan="2">' + esc(f.colPlace) + '</th><th rowspan="2">' + esc(f.colAmount) + '</th><th rowspan="2" class="noprint c-rm"></th></tr>' +
+      '</th><th rowspan="2">' + esc(f.colAmount) + '</th><th rowspan="2" class="noprint c-rm"></th></tr>' +
       '<tr><th>' + esc(f.colFrom) + '</th><th>' + esc(f.colTo) + '</th></tr></thead>' +
       '<tbody>' + meal + '</tbody>' +
-      '<tfoot><tr><td colspan="5"></td><td class="sum"><output id="sum-meal"></output></td><td class="noprint"></td></tr></tfoot></table>' +
+      '<tfoot><tr><td colspan="4"></td><td class="sum"><output id="sum-meal"></output></td><td class="noprint"></td></tr></tfoot></table>' +
       addBtn('meal') +
       '<h3 class="p-sec">' + esc(f.spS2) + '</h3><p class="p-note">' + esc(f.spS2Note) + '</p>' +
-      '<table class="grid"><colgroup><col class="c-date"><col class="c-time"><col class="c-time"><col class="c-hrs"><col><col class="c-amt"><col class="noprint c-rm"></colgroup>' +
-      '<thead><tr><th>' + esc(f.colPeriod) + '</th><th colspan="4">' + esc(f.colText) + '</th><th>' + esc(f.colAmount) + '</th><th class="noprint c-rm"></th></tr></thead>' +
+      '<table class="grid"><colgroup><col class="m-date"><col class="m-time"><col class="m-time"><col class="m-hrs"><col class="m-amt"><col class="noprint c-rm"></colgroup>' +
+      '<thead><tr><th>' + esc(f.colPeriod) + '</th><th colspan="3">' + esc(f.colText) + '</th><th>' + esc(f.colAmount) + '</th><th class="noprint c-rm"></th></tr></thead>' +
       '<tbody>' + other + '</tbody></table>' + addBtn('other') +
       '<div class="p-total"><span>' + esc(f.spTotal) + '</span><output id="tot"></output><span class="la">' + esc(f.spLa) + '</span></div>' +
       hospBlock('spesen') + signBlock(false);
@@ -534,6 +571,13 @@
         inp.setAttribute('value', src.value);
       }
     });
+    var liveSel = paperEl.querySelectorAll('select');
+    copy.querySelectorAll('select').forEach(function (sel, i) {
+      Array.prototype.forEach.call(sel.options, function (o) {
+        if (o.value === liveSel[i].value) o.setAttribute('selected', ''); else o.removeAttribute('selected');
+      });
+    });
+    markEmpty(copy);
     copy.querySelectorAll('.noprint').forEach(function (n) { n.remove(); });
     var css = Array.prototype.map.call(document.querySelectorAll('style'), function (s) { return s.textContent; }).join('\n');
     return '<!doctype html><html lang="' + state.lang + '"><head><meta charset="utf-8">' +
@@ -541,6 +585,14 @@
       '<style>' + css + '</style></head><body><main class="app"><section class="step"><div class="paper-scroll">' +
       copy.outerHTML + '</div></section></main></body></html>';
   }
+
+  /* Leere Datums- und Zeitfelder sollen im Ausdruck keine Platzhalter zeigen. */
+  function markEmpty(root) {
+    root.querySelectorAll('input[type=date], input[type=time]').forEach(function (inp) {
+      if (inp.value === '') inp.setAttribute('data-empty', ''); else inp.removeAttribute('data-empty');
+    });
+  }
+  window.addEventListener('beforeprint', function () { markEmpty(paperEl); });
 
   $('#btn-pdf').addEventListener('click', function () {
     if (dl) { saveViaCapability(fileBase() + '.html', printReadyHtml()); return; }
@@ -554,7 +606,7 @@
   $('#btn-json').addEventListener('click', function () {
     var data = {
       version: 1, lang: state.lang, type: state.type,
-      name: state.name, occasion: state.occasion, city: state.city, date: state.date, plate: state.plate,
+      name: state.name, occasion: state.occasion, dest: state.dest, city: state.city, date: state.date, plate: state.plate,
       meal: state.meal, other: state.other, beleg: state.beleg, km: state.km, eigen: state.eigen,
       hosp: state.hosp, sig: state.sig
     };
@@ -589,6 +641,7 @@
       ['b', 'l', 'd'].forEach(function (c) { state.hosp[t][c] = str(h[c]); });
       state.hosp[t].mode = h.mode === 'offset' || h.mode === 'tax' ? h.mode : '';
     });
+    state.dest = destValid(str(d.dest)) ? str(d.dest) : '';
     state.sig = typeof d.sig === 'string' && SIG_RE.test(d.sig) ? d.sig : null;
   }
   $('#file-load').addEventListener('change', function (e) {

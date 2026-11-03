@@ -17,7 +17,7 @@ Es wird nichts ins Netz gesendet. Eine Content-Security-Policy in `index.html` b
 ## Auf GitHub Pages veröffentlichen
 
 1. Neues Repository auf GitHub anlegen, zum Beispiel `reisekostenabrechnung`.
-2. Alle Dateien aus diesem Ordner hochladen (`index.html`, `style.css`, `app.js`, `README.md`, `GLOSSARY.md`, `docs/`).
+2. Alle Dateien aus diesem Ordner hochladen (`index.html`, `style.css`, `app.js`, `orte.js`, `sw.js`, `manifest.webmanifest`, `icons/`, `README.md`, `GLOSSARY.md`, `docs/`).
 3. Im Repository **Settings → Pages** öffnen, bei **Source** „Deploy from a branch“ wählen, Branch `main` und Ordner `/ (root)` einstellen, speichern.
 4. Nach etwa einer Minute ist die Seite unter `https://<benutzername>.github.io/reisekostenabrechnung/` erreichbar.
 
@@ -29,6 +29,7 @@ Bei einem privaten Repository ist GitHub Pages nur mit bestimmten GitHub-Tarifen
 | --- | --- |
 | `index.html` | Seitengerüst und Content-Security-Policy |
 | `style.css` | Oberfläche und Druck-Layout |
+| `orte.js` | Liste der Länder und Orte für die Auswahl „Ort / Land“ (aus der Übersicht der Auslandspauschalen 2026) |
 | `app.js` | Texte in drei Sprachen, Formulare, Berechnung, Unterschrift, Sichern |
 | `GLOSSARY.md` | Begriffe der Reisekostenabrechnung, abgeleitet aus den Vorlagen |
 | `docs/regeln.md` | Regeln und offene Punkte |

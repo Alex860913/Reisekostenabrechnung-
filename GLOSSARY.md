@@ -8,6 +8,9 @@ Person, die die Abrechnung ausfüllt und unterschreibt.
 **Projektname / Vorgang**
 Freitext, zu welchem Projekt oder Vorgang die Abrechnung gehört.
 
+**Ort / Land**
+Ziel der Reise, einmal oben auf der Spesenabrechnung aus einer Liste gewählt. Die Liste entspricht der Übersicht der Auslandspauschalen ab 1. Januar 2026 und enthält zusätzlich „Deutschland (Inland)“.
+
 **Abrechnungsart**
 Eine der vier Vorlagen: Spesenabrechnung, Abrechnung gegen Beleg, KM-Abrechnung oder Eigenbeleg.
 
